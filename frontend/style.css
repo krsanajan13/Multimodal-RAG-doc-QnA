@@ -1,0 +1,198 @@
+/* --- GLOBAL VARIABLES & RESET --- */
+:root {
+    --primary-blue: #2E86C1;       /* The dark blue for buttons/borders */
+    --light-blue-bg: #EBF5FB;      /* The very light blue for backgrounds */
+    --pill-bg: #D6EAF8;            /* The light blue for header pills */
+    --pill-border: #AED6F1;        /* Border for pills */
+    --text-dark: #2C3E50;
+    --text-grey: #566573;
+    --border-grey: #D5D8DC;
+}
+
+body {
+    background-color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* --- TYPOGRAPHY --- */
+.title {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #000;
+}
+
+/* The "Pill" style for section headers (matches "3. Generated Answer" & "4. Sources") */
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    color: #000;
+    
+    /* Creating the pill shape */
+    display: inline-block;
+    background-color: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    padding: 6px 15px;
+    border-radius: 20px; /* Rounded pill edges */
+}
+
+/* Overriding the pill style for the first two headers if they are just text in your design, 
+   but keeping them consistent looks better. The code below applies pill style to ALL h2s. 
+   If you want 1 & 2 to be plain text, remove the pill properties above. */
+
+/* --- INPUTS & BUTTONS --- */
+.upload-box,
+.question-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.text-field, .question-field {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid var(--border-grey);
+    border-radius: 5px;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+}
+
+.text-field {
+    background-color: #F8F9F9; /* Light grey for disabled input */
+    color: #808B96;
+}
+
+.question-field:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(46, 134, 193, 0.1);
+}
+
+/* Browse Button (Grey) */
+.upload-btn {
+    padding: 10px 25px;
+    border: 1px solid var(--border-grey);
+    background-color: #EAEDED;
+    color: #000;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
+}
+.upload-btn:hover { background-color: #D5D8DC; }
+
+/* Submit Button (Blue) */
+.submit-btn {
+    padding: 10px 25px;
+    border: none;
+    background-color: var(--primary-blue);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
+    min-width: 150px;
+}
+.submit-btn:hover { background-color: #21618C; }
+.submit-btn:disabled { background-color: #AED6F1; cursor: not-allowed; }
+
+/* --- ANSWER SECTION --- */
+.answer-box {
+    background-color: #ffffff;
+    border: 1px solid var(--primary-blue); /* Blue border like image */
+    border-radius: 8px;
+    padding: 20px;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 80px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+/* --- SOURCES SECTION --- */
+/* The outer container for the sources area */
+.sources-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    border: 1px solid var(--primary-blue); /* The blue border around the whole sources section */
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+    height: 500px; /* Fixed height to match image look */
+}
+
+/* Columns */
+.text-column,
+.image-column {
+    flex: 1; /* 50% width each */
+    display: flex;
+    flex-direction: column;
+}
+
+.column-header {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+/* Scroll area inside columns */
+.scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px; /* Space for scrollbar */
+}
+
+/* Cards (Source Snippets) */
+.card {
+    background: #F8F9F9; /* Very light grey card bg */
+    border: 1px solid var(--border-grey);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.card b {
+    display: block;
+    color: #566573;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+/* Images */
+.preview-img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    background-color: white;
+}
+
+.img-caption {
+    font-size: 13px;
+    font-weight: 700;
+    color: #000;
+    margin-top: 5px;
+}
+
+/* Custom Scrollbar for neatness */
+.scroll-area::-webkit-scrollbar { width: 8px; }
+.scroll-area::-webkit-scrollbar-track { background: #f1f1f1; }
+.scroll-area::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.scroll-area::-webkit-scrollbar-thumb:hover { background: #999; }

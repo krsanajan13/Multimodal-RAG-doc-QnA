@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Modal RAG QA System</title>
+    <style>
+        /* --- GLOBAL STYLES --- */
+        :root {
+            --primary-blue: #2E86C1;
+            --light-blue-bg: #D6EAF8;
+            --border-color: #D5D8DC;
+            --text-color: #2C3E50;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F8F9F9;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1.title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #000;
+        }
+
+        h2.section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        /* --- INPUTS & BUTTONS --- */
+        .upload-box, .question-box {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        /* Input 1 (Disabled Look) */
+        .text-field {
+            background-color: #F2F3F4;
+            color: #566573;
+        }
+
+        /* Input 2 (Active Question) */
+        .question-field {
+            background-color: #fff;
+        }
+        .question-field:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 5px rgba(46, 134, 193, 0.3);
+        }
+
+        /* Buttons */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .upload-btn {
+            background-color: #E5E7E9;
+            color: #000;
+        }
+        .upload-btn:hover { background-color: #D7DBDD; }
+
+        .submit-btn {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        .submit-btn:hover { background-color: #2874A6; }
+        .submit-btn:disabled { background-color: #AED6F1; cursor: not-allowed; }
+
+        /* --- ANSWER BOX --- */
+        .answer-box {
+            background-color: #ffffff;
+            border: 2px solid #AED6F1;
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 60px;
+            margin-bottom: 10px;
+            color: #34495E;
+        }
+
+        /* --- SOURCES CONTAINER --- */
+        .sources-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            height: 500px; /* Fixed height for scrolling */
+        }
+
+        .text-column, .image-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+            overflow: hidden; /* Contains scroll */
+        }
+
+        .column-header {
+            background-color: #fff;
+            padding: 15px;
+            font-weight: 700;
+            font-size: 18px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .scroll-area {
+            padding: 15px;
+            overflow-y: auto;
+            height: 100%;
+            background-color: #F8F9F9;
+        }
+
+        /* --- SOURCE CARDS --- */
+        .card {
+            background: white;
+            border: 1px solid #E5E8E8;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 14px;
+        }
+
+        .card b {
+            color: #5D6D7E;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Image Specifics */
+        .preview-img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            margin-bottom: 8px;
+        }
+
+        .img-caption {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Scrollbar Styling */
+        .scroll-area::-webkit-scrollbar { width: 8px; }
+        .scroll-area::-webkit-scrollbar-track { background: #f1f1f1; }
+        .scroll-area::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        .scroll-area::-webkit-scrollbar-thumb:hover { background: #bbb; }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1 class="title">Multi-Modal RAG QA System</h1>
+
+        <h2 class="section-title">1. Upload Document</h2>
+        <div class="upload-box">
+            <input type="text" value="qatar_test_doc.pdf" class="text-field" disabled>
+            <button class="upload-btn">Browse</button>
+        </div>
+
+        <h2 class="section-title">2. Ask a Question</h2>
+        <div class="question-box">
+            <input 
+                id="questionInput" 
+                type="text"
+                placeholder="What are the key economic statistics and visual data points mentioned about Qatar?" 
+                class="question-field"
+            >
+            <button id="submitBtn" class="submit-btn" onclick="askQuestion()">Submit Question</button>
+        </div>
+
+        <h2 class="section-title">3. Generated Answer</h2>
+        <div id="answerBox" class="answer-box">
+            <i>The generated answer will appear here...</i>
+        </div>
+
+        <h2 class="section-title">4. Sources Used from Document</h2>
+
+        <div class="sources-container">
+            
+            <div class="text-column">
+                <div class="column-header">Text Snippets</div>
+                <div class="scroll-area" id="textSources">
+                    <div style="color: #999; text-align: center; margin-top: 20px;">No text sources yet.</div>
+                </div>
+            </div>
+
+            <div class="image-column">
+                <div class="column-header">Image Sources</div>
+                <div class="scroll-area" id="imageSources">
+                    <div style="color: #999; text-align: center; margin-top: 20px;">No image sources yet.</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+async function askQuestion() {
+    const questionInput = document.getElementById("questionInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const answerBox = document.getElementById("answerBox");
+    const textDiv = document.getElementById("textSources");
+    const imgDiv = document.getElementById("imageSources");
+
+    const question = questionInput.value.trim();
+    if (!question) {
+        alert("Please enter a question.");
+        return;
+    }
+
+    // UI Loading State
+    submitBtn.innerText = "Analyzing...";
+    submitBtn.disabled = true;
+    answerBox.innerHTML = "<i>Generating response based on document context...</i>";
+    textDiv.innerHTML = "";
+    imgDiv.innerHTML = "";
+
+    try {
+        const response = await fetch("/ask", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({query: question})
+        });
+
+        const data = await response.json();
+
+        // 1. Update Answer
+        answerBox.innerHTML = data.answer;
+
+        // 2. Update Text Sources
+        if (data.sources_text && data.sources_text.length > 0) {
+            data.sources_text.forEach((src, i) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <b>Source ${i+1} (Page ${src.page})</b>
+                    ${src.text}
+                `;
+                textDiv.appendChild(card);
+            });
+        } else {
+            textDiv.innerHTML = "<div style='color:#999; text-align:center;'>No text sources found.</div>";
+        }
+
+        // 3. Update Image Sources
+        if (data.sources_image && data.sources_image.length > 0) {
+            data.sources_image.forEach((src, i) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <img src="${src.image}" class="preview-img" alt="Retrieved Chart">
+                    <div class="img-caption">Figure: ${src.chunk_id} (Page ${src.page})</div>
+                `;
+                imgDiv.appendChild(card);
+            });
+        } else {
+            imgDiv.innerHTML = "<div style='color:#999; text-align:center;'>No image sources found.</div>";
+        }
+
+    } catch (error) {
+        console.error("Error:", error);
+        answerBox.innerHTML = "<span style='color:red;'>Error connecting to the server. Check console for details.</span>";
+    } finally {
+        // Reset Button
+        submitBtn.innerText = "Submit Question";
+        submitBtn.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
