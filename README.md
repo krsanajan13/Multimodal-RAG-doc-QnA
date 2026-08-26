@@ -6,7 +6,7 @@ The system extracts text, tables, and images, performs OCR, creates multi-modal 
 
 ---
 
-## 🏗️ Architecture & Pipeline
+## Architecture & Pipeline
 
 ```
                        ┌─────────────────────────┐
@@ -40,7 +40,7 @@ The system extracts text, tables, and images, performs OCR, creates multi-modal 
 
 ---
 
-## 🛠️ Project Structure
+##  Project Structure
 
 ```
 multi_modal_rag_qna/
@@ -78,7 +78,7 @@ multi_modal_rag_qna/
 
 ---
 
-## ⚡ How to Run
+##  How to Run
 
 ### 1. Install Dependencies
 
@@ -110,7 +110,7 @@ Open your browser and navigate to **`http://127.0.0.1:3000`** to start asking qu
 
 ---
 
-## ⚙️ Configuration (`config.py`)
+##  Configuration (`config.py`)
 
 Key settings used across the pipeline:
 
